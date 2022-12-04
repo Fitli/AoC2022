@@ -16,7 +16,7 @@ for it in a:
     for i in range(middle, middle*2):
         if it[i] in letters:
             suma += to_priority(it[i])
-            break;
+            break
 print(suma)
             
 print("TASK TWO")
