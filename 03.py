@@ -1,31 +1,39 @@
-def fts(path):
+def fts(path: str) -> str:
     with open(path, "r") as f:
         return f.read()
 
-def to_priority(item):
+
+def to_priority(item: str) -> int:
     if(item == item.lower()):
         return ord(item)-ord("a")+1
     else:
         return ord(item)-ord("A")+27
 
-a = fts("03_in.txt").split()
-suma = 0
-for it in a:
-    middle = len(it)//2
-    letters = set(it[:middle])
-    for i in range(middle, middle*2):
-        if it[i] in letters:
-            suma += to_priority(it[i])
-            break
-print(suma)
-            
-print("TASK TWO")
 
-suma = 0
-for j in range(len(a)//3):
-    it = a[3*j]
-    letters = set(it)
-    letters = letters.intersection(a[3*j+1])
-    letters = letters.intersection(a[3*j+2])
-    suma += to_priority(letters.pop())
-print(suma)
+def task1(inp: str) -> int:
+    lines = inp.split()
+    suma = 0
+    for line in lines:
+        middle = len(line)//2
+        letters = set(line[:middle])
+        for i in range(middle, middle*2):
+            if line[i] in letters:
+                suma += to_priority(line[i])
+                break
+    return suma
+
+
+def task2(inp: str) -> int:
+    lines = inp.split()
+    suma = 0
+    for i in range(0, len(lines), 3):
+        letters = set(lines[i])\
+            .intersection(lines[i+1])\
+            .intersection(lines[i+2])
+        suma += to_priority(letters.pop())
+    return suma
+
+
+text = fts("03in.txt")
+print(task1(text))
+print(task2(text))
