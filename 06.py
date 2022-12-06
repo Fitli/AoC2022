@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Set, Dict
 
 
 def fts(path: str) -> str:
@@ -6,17 +6,16 @@ def fts(path: str) -> str:
         return f.read()
 
 
-def text_to_set(text: str) -> Set[str]:
-    s = set()
-    for ch in text:
-        s.add(ch)
-    return s
-
-
 def find_first_marker(text: str, marker_len: int) -> int:
-    for i in range(len(text) + 1 - marker_len):
-        if len(text_to_set(text[i:i + marker_len])) == marker_len:
-            return i + marker_len
+    letters: Dict[str, int] = {}
+    for i in range(len(text)):
+        letters[text[i]] = letters.get(text[i], 0) + 1
+        if i >= marker_len:
+            letters[text[i-marker_len]] -= 1
+            if letters[text[i-marker_len]] == 0:
+                letters.pop(text[i-marker_len])
+        if len(letters) == marker_len:
+            return i + 1
 
 
 inp = fts("06in.txt")
