@@ -10,6 +10,33 @@ class Dir:
         self.size = 0
         self.content = {}
 
+    def ls_line(self, name: str, size: str):
+        if name in self.content:
+            return
+        if size == "dir":
+            new_d = Dir(name, self)
+            self.content[name] = new_d
+        else:
+            new_f = File(name, self, int(size))
+            self.content[name] = new_f
+
+    def recalculate_size(self):
+        self.size = sum([item.size for item in self.content.values()])
+        return self.size
+
+    def find_min_bigger(self, lower_bound: int) -> int:
+        m_size = self.size
+        for ch in self.content.values():
+            if ch.is_dir and ch.size > lower_bound:
+                m_size = min(m_size, ch.find_min_bigger(lower_bound))
+        return m_size
+
+    def cd(self, new_dir_name: str) -> ('Dir', int):
+        if new_dir_name == "..":
+            self.recalculate_size()
+            return self.parent, self.size
+        return self.content[new_dir_name], 0
+
 
 class File:
     def __init__(self, name, parent, size):
@@ -24,32 +51,6 @@ def read_lines(filename: str) -> List[str]:
         return f.readlines()
 
 
-def recalculate_size(d: Dir):
-    d.size = sum([item.size for item in d.content.values()])
-    return d.size
-
-
-def cd(d: Optional[Dir], new_dir_name: str) -> (Dir, int):
-    if new_dir_name == "..":
-        if d:
-            recalculate_size(d)
-        return d.parent, d.size
-    if not d:
-        return Dir(new_dir_name, d), 0
-    return d.content[new_dir_name], 0
-
-
-def ls_line(d: Dir, name: str, size: str):
-    if name in d.content:
-        return
-    if size == "dir":
-        new_d = Dir(name, d)
-        d.content[name] = new_d
-    else:
-        new_f = File(name, d, int(size))
-        d.content[name] = new_f
-
-
 def task1(lines: List[str]) -> int:
     d = None
     s = 0
@@ -57,26 +58,21 @@ def task1(lines: List[str]) -> int:
         line = line.strip()
         cd_match = re.match(r"\$ cd (.+)$", line)
         if cd_match:
-            d, size = cd(d, cd_match.group(1))
+            if not d:
+                d, size = Dir(cd_match.group(1), d), 0
+            else:
+                d, size = d.cd(cd_match.group(1))
             if size < 100000:
                 s += size
         ls_match = re.match(r"(dir|\d+) (.+)$", line)
         if ls_match:
-            ls_line(d, ls_match.group(2), ls_match.group(1))
+            d.ls_line(ls_match.group(2), ls_match.group(1))
     while d:
-        recalculate_size(d)
+        d.recalculate_size()
         if d.size < 100000:
             s += d.size
         d = d.parent
     return s
-
-
-def find_min_bigger(d: Dir, lower_bound: int) -> int:
-    m_size = d.size
-    for ch in d.content.values():
-        if ch.is_dir and ch.size > lower_bound:
-            m_size = min(m_size, find_min_bigger(ch, lower_bound))
-    return m_size
 
 
 def task2(lines: List[str]) -> int:
@@ -85,17 +81,20 @@ def task2(lines: List[str]) -> int:
         line = line.strip()
         cd_match = re.match(r"\$ cd (.+)$", line)
         if cd_match:
-            d, size = cd(d, cd_match.group(1))
+            if not d:
+                d = Dir(cd_match.group(1), d)
+            else:
+                d, size = d.cd(cd_match.group(1))
         ls_match = re.match(r"(dir|\d+) (.+)$", line)
         if ls_match:
-            ls_line(d, ls_match.group(2), ls_match.group(1))
+            d.ls_line(ls_match.group(2), ls_match.group(1))
 
     while d.parent:
-        recalculate_size(d)
+        d.recalculate_size()
         d = d.parent
-    root_size = recalculate_size(d)
+    root_size = d.recalculate_size()
 
-    return find_min_bigger(d, 30000000 - (70000000 - root_size))
+    return d.find_min_bigger(30000000 - (70000000 - root_size))
 
 
 lns = read_lines("07in.txt")
