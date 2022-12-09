@@ -18,30 +18,16 @@ def move_head(head: Coordinates, direction: str) -> Coordinates:
         return Coordinates(head.x, head.y-1)
 
 
-def is_too_far(tail: Coordinates, head: Coordinates) -> bool:
-    return max(abs(tail.x - head.x), abs(tail.y - head.y)) > 1
-
-
-def is_next_to(tail: Coordinates, head: Coordinates) -> Coordinates:
-    return (abs(tail.x - head.x) == 1 and tail.y == head.y) or \
-           (abs(tail.y - head.y) == 1 and tail.x == head.x)
-
-
-def is_diagonal(tail: Coordinates, head: Coordinates) -> Coordinates:
-    return (abs(tail.x - head.x) == 1) and (abs(tail.y - head.y) == 1)
-
-
 def move_tail(tail: Coordinates, head: Coordinates) -> Coordinates:
-    if not is_too_far(tail, head):
-        return tail
-    for i in range(tail.x-1, tail.x+2):
-        for j in range(tail.y-1, tail.y+2):
-            if is_next_to(Coordinates(i, j), head):
-                return Coordinates(i, j)
-    for i in (tail.x-1, tail.x+1):
-        for j in (tail.y-1, tail.y+1):
-            if is_diagonal(Coordinates(i, j), head):
-                return Coordinates(i, j)
+    dx = head.x - tail.x
+    dy = head.y - tail.y
+    if abs(dx) == 2 and abs(dy) == 2:
+        return Coordinates(tail.x + dx // 2, tail.y + dy // 2)
+    elif abs(dx) == 2:
+        return Coordinates(tail.x + dx//2, head.y)
+    elif abs(dy) == 2:
+        return Coordinates(head.x, tail.y + dy//2)
+    return tail
 
 
 def simulate(lines, num_knots):
