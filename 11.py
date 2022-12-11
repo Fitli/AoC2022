@@ -33,25 +33,8 @@ class Monkey:
 
 
 def parse_transform_fcn(line):
-    m = re.search(r"Operation: new = (\d+|old) ([*+]) (\d+|old)$", line)
-    if m.group(2) == "+":
-        if m.group(1) == "old" and m.group(3) == "old":
-            return lambda old: old + old
-        elif m.group(1) == "old":
-            return lambda old: old + int(m.group(3))
-        elif m.group(3) == "old":
-            return lambda old: old + int(m.group(1))
-        else:
-            return lambda old: int(m.group(1)) + int(m.group(3))
-    if m.group(2) == "*":
-        if m.group(1) == "old" and m.group(3) == "old":
-            return lambda old: old * old
-        elif m.group(1) == "old":
-            return lambda old: old * int(m.group(3))
-        elif m.group(3) == "old":
-            return lambda old: old * int(m.group(1))
-        else:
-            return lambda old: int(m.group(1)) * int(m.group(3))
+    m = re.search(r"Operation: new = (.*)$", line)
+    return eval(f"lambda old: {m.group(1)}")
 
 
 def parse_monkey(text):
