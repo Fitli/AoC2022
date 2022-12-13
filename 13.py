@@ -1,5 +1,4 @@
-import re
-from typing import Union, List, Tuple
+from typing import Union, List
 
 Value = Union[int, List['Value']]
 
@@ -34,30 +33,15 @@ def cmp(left: Value, right: Value) -> int:
     return 0
 
 
-def parse(elem: str) -> Tuple[Value, int]:
-    m = re.match(r"(\d+),?", elem)
-    if m:
-        return int(m.group(1)), len(m.group(0))
-
-    out = []
-    assert elem[0] == "["
-    i = 1
-    while True:
-        if elem[i] == ",":
-            i += 1
-        if elem[i] == "]":
-            i += 1
-            return out, i
-        l, di = parse(elem[i:])
-        i += di
-        out.append(l)
+def parse(elem: str) -> Value:
+    return eval(elem)
 
 
 def task1(text: str) -> int:
     pairs = text.strip().split("\n\n")
     s = 0
     for i, pair in enumerate(pairs):
-        left, right = (parse(e)[0] for e in pair.split("\n"))
+        left, right = (parse(e) for e in pair.split("\n"))
         if cmp(left, right) == 1:
             s += i+1
     return s
@@ -65,7 +49,7 @@ def task1(text: str) -> int:
 
 def task2(text: str) -> int:
     lines = text.strip().split()
-    packets = [parse(e)[0] for e in lines]
+    packets = [parse(e) for e in lines]
     divider1 = [[2]]
     divider2 = [[6]]
     divider1pos = [cmp(packet, divider1) for packet in packets].count(1) + 1
