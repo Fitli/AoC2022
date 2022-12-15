@@ -78,26 +78,28 @@ def task1(text: str):
     count -= len(beacons)
     return count
 
+# ----------- PART 2 ----------------------------------------
 
-def frequency(x, y):
+
+def frequency(x: int, y: int):
     return 4000000 * x + y
 
 
-def transform(point: Coordinates) -> Coordinates:
+def rotate(point: Coordinates) -> Coordinates:
     return Coordinates(point.x + point.y, point.y - point.x)
 
 
-def detransform(point: Coordinates) -> Coordinates:
+def rotate_back(point: Coordinates) -> Coordinates:
     return Coordinates((point.x - point.y) // 2, (point.x + point.y) // 2)
 
 
-def make_rectangle(sensor, beacon):
+def make_rectangle(sensor: Coordinates, beacon: Coordinates):
     dist = distance(sensor, beacon)
-    return (transform(Coordinates(sensor.x, sensor.y - dist)),
-            transform(Coordinates(sensor.x, sensor.y + dist)))
+    return (rotate(Coordinates(sensor.x, sensor.y - dist)),
+            rotate(Coordinates(sensor.x, sensor.y + dist)))
 
 
-def difference(orig, removed) -> Set[Rectangle]:
+def difference(orig: Rectangle, removed: Rectangle) -> Set[Rectangle]:
     if orig[0].x > removed[1].x or orig[0].y > removed[1].y or \
             orig[1].x < removed[0].x or orig[1].y < removed[0].y:
         return {orig}
@@ -118,11 +120,11 @@ def difference(orig, removed) -> Set[Rectangle]:
     return res
 
 
-def corners(rectangle):
-    cs = [detransform(rectangle[0]),
-          detransform(rectangle[1]),
-          detransform(Coordinates(rectangle[0].x, rectangle[1].y)),
-          detransform(Coordinates(rectangle[1].x, rectangle[0].y))]
+def corners(rectangle: Rectangle):
+    cs = [rotate_back(rectangle[0]),
+          rotate_back(rectangle[1]),
+          rotate_back(Coordinates(rectangle[0].x, rectangle[1].y)),
+          rotate_back(Coordinates(rectangle[1].x, rectangle[0].y))]
     return cs
 
 
@@ -130,8 +132,8 @@ def task2(text: str):
     lines = text.strip().split("\n")
     max_coord = 4000000
     coords = parse(lines)
-    rectangles = {(transform(Coordinates(max_coord // 2, -max_coord // 2)),
-                   transform(Coordinates(max_coord // 2, 3 * max_coord // 2)))}
+    rectangles = {(rotate(Coordinates(max_coord // 2, -max_coord // 2)),
+                   rotate(Coordinates(max_coord // 2, 3 * max_coord // 2)))}
     for sensor, beacon in coords:
         new_rectangles = set()
         removed = make_rectangle(sensor, beacon)
