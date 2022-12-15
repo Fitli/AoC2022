@@ -19,59 +19,57 @@ class Cave:
                 bulid_line(start, end, block_set)
                 start = end
         maxy = max({block.y for block in block_set})
-        maxx = max({block.x for block in block_set})
-        minx = min({block.x for block in block_set})
-        self.plan = []
+        maxx = 500 + maxy + 5
+        minx = 500 - maxy - 5
+        self.rocks = []
         for c in range(maxx - minx + 1):
-            self.plan.append([False] * (maxy + 1))
+            self.rocks.append([False] * (maxy + 1))
         for block in block_set:
-            self.plan[block.x - minx][block.y] = True
+            self.rocks[block.x - minx][block.y] = True
         self.hole = 500 - minx
         self.floor = False
 
     def add_floor(self):
-        for col in self.plan:
+        for col in self.rocks:
             col.append(False)
             col.append(True)
         self.floor = True
 
-    def add_col_left(self):
-        self.plan.insert(0, [False] * len(self.plan[0]))
-        if self.floor:
-            self.plan[0][-1] = True
-
-    def add_col_right(self):
-        self.plan.append([False] * len(self.plan[0]))
-        if self.floor:
-            self.plan[-1][-1] = True
-
     def pour(self):
         x = self.hole
         y = 0
-        if self.plan[x][y]:
+        if self.rocks[x][y]:
             return False
         while True:
-            if x == 0:
-                self.add_col_left()
-                x += 1
-                self.hole += 1
-            if x == len(self.plan) - 1:
-                self.add_col_right()
-            if y == len(self.plan[x]) - 1:
+            if y == len(self.rocks[x]) - 1:
                 return False
-            if not self.plan[x][y + 1]:
+            if not self.rocks[x][y + 1]:
                 y += 1
                 continue
-            elif not self.plan[x - 1][y + 1]:
+            elif not self.rocks[x - 1][y + 1]:
                 x -= 1
                 y += 1
                 continue
-            elif not self.plan[x + 1][y + 1]:
+            elif not self.rocks[x + 1][y + 1]:
                 x += 1
                 y += 1
                 continue
-            self.plan[x][y] = True
+            self.rocks[x][y] = True
             return True
+
+    def count2(self):
+        sand = []
+        for col in self.rocks:
+            sand.append([False] * len(col))
+        sand[self.hole][0] = True
+        count = 1
+        for row in range(1, len(sand[0])):
+            for col in range(1, len(sand) - 1):
+                if not self.rocks[col][row] and (sand[col][row - 1] or
+                                                 sand[col-1][row-1] or sand[col+1][row-1]):
+                    sand[col][row] = True
+                    count += 1
+        return count
 
 
 def ftl(filename: str) -> List[str]:
@@ -112,10 +110,7 @@ def task1(lines):
 def task2(lines):
     cave = Cave(lines)
     cave.add_floor()
-    count = 0
-    while cave.pour():
-        count += 1
-    return count
+    return cave.count2()
 
 
 inp = ftl("14in.txt")
