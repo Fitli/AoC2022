@@ -18,6 +18,15 @@ def find_first_marker(text: str, marker_len: int) -> int:
             return i + 1
 
 
-inp = fts("06in.txt")
-print(find_first_marker(inp, 4))
-print(find_first_marker(inp, 14))
+def task1(text: str):
+    return find_first_marker(text, 4)
+
+
+def task2(text: str):
+    return find_first_marker(text, 14)
+
+
+if __name__ == "__main__":
+    inp = fts("06in.txt")
+    print(task1(inp))
+    print(task2(inp))

@@ -1,9 +1,13 @@
 from typing import List
 
 
-def file_to_grid(filename):
-    with open(filename) as f:
-        lines = list(map(lambda x: list(x.strip()), f.readlines()))
+def fts(path: str) -> str:
+    with open(path, "r") as f:
+        return f.read()
+
+
+def make_grid(text):
+    lines = text.strip().split("\n")
     for i in range(len(lines)):
         lines[i] = list(map(int, lines[i]))
     return lines
@@ -21,7 +25,8 @@ def is_visible_line(tree_line: List[int]) -> List[bool]:
     return visible
 
 
-def task1(trees: List[List[int]]):
+def task1(text: str):
+    trees = make_grid(text)
     width, height = len(trees[0]), len(trees)
     is_visible = [[False] * width for _ in range(height)]
     for i in range(height):
@@ -57,7 +62,8 @@ def scenic_line(tree_line: List[int]) -> List[int]:
     return scores
 
 
-def task2(trees: List[List[int]]):
+def task2(text: str):
+    trees = make_grid(text)
     width, height = len(trees[0]), len(trees)
     scenic_score = [[1] * width for _ in range(height)]
     for i in range(height):
@@ -74,6 +80,7 @@ def task2(trees: List[List[int]]):
     return max(map(max, scenic_score))
 
 
-grid = file_to_grid("08in.txt")
-print(task1(grid))
-print(task2(grid))
+if __name__ == "__main__":
+    inp = fts("08in.txt")
+    print(task1(inp))
+    print(task2(inp))

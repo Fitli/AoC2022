@@ -2,7 +2,7 @@ import math
 import re
 
 
-def file_to_text(filename):
+def fts(filename):
     with open(filename) as f:
         return f.read()
 
@@ -73,6 +73,7 @@ def task2(text):
     return max2[0].num_inspections * max2[1].num_inspections
 
 
-inp = file_to_text("11in.txt")
-print(task1(inp))
-print(task2(inp))
+if __name__ == "__main__":
+    inp = fts("11in.txt")
+    print(task1(inp))
+    print(task2(inp))

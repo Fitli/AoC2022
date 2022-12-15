@@ -53,9 +53,9 @@ class File:
         self.is_dir = False
 
 
-def read_lines(filename: str) -> List[str]:
-    with open(filename, "r") as f:
-        return f.readlines()
+def fts(path: str) -> str:
+    with open(path, "r") as f:
+        return f.read()
 
 
 def tree_from_lines(lines: List[str]) -> Dir:
@@ -78,16 +78,19 @@ def tree_from_lines(lines: List[str]) -> Dir:
     return d
 
 
-def task1(lines: List[str]) -> int:
+def task1(text: str) -> int:
+    lines = text.strip().split("\n")
     root = tree_from_lines(lines)
     return root.find_sum_of_all_smaller(100000)
 
 
-def task2(lines: List[str]) -> int:
+def task2(text: str) -> int:
+    lines = text.strip().split("\n")
     root = tree_from_lines(lines)
     return root.find_min_bigger(30000000 - (70000000 - root.size))
 
 
-lns = read_lines("07in.txt")
-print(task1(lns))
-print(task2(lns))
+if __name__ == "__main__":
+    inp = fts("07in.txt")
+    print(task1(inp))
+    print(task2(inp))

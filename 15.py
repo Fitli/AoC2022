@@ -8,9 +8,9 @@ Segment = namedtuple("Segment", "start end")
 Rectangle = Tuple[Coordinates, Coordinates]
 
 
-def ftl(filename: str) -> List[str]:
+def fts(filename: str) -> str:
     with open(filename, "r") as f:
-        return f.read().strip().split("\n")
+        return f.read()
 
 
 def distance(a: Coordinates, b: Coordinates):
@@ -59,7 +59,9 @@ def parse(lines: List[str]) -> List[Tuple[Coordinates, Coordinates]]:
     return coords
 
 
-def task1(lines, line):
+def task1(text: str):
+    lines = text.strip().split("\n")
+    line = 2000000
     coords = parse(lines)
     segments = []
     beacons = set()
@@ -124,7 +126,9 @@ def corners(rectangle):
     return cs
 
 
-def task2(lines, max_coord):
+def task2(text: str):
+    lines = text.strip().split("\n")
+    max_coord = 4000000
     coords = parse(lines)
     rectangles = {(transform(Coordinates(max_coord // 2, -max_coord // 2)),
                    transform(Coordinates(max_coord // 2, 3 * max_coord // 2)))}
@@ -140,8 +144,9 @@ def task2(lines, max_coord):
                 return frequency(corner.x, corner.y)
 
 
-inp = ftl("15in.txt")
-print(task1(inp, 2000000))
-start = time.time()
-print(task2(inp, 4000000))
-print(f"time: {time.time() - start} s")
+if __name__=="__main__":
+    inp = fts("15in.txt")
+    print(task1(inp))
+    start = time.time()
+    print(task2(inp))
+    print(f"time: {time.time() - start} s")

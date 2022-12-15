@@ -72,9 +72,9 @@ class Cave:
         return count
 
 
-def ftl(filename: str) -> List[str]:
+def fts(filename: str) -> str:
     with open(filename, "r") as f:
-        return f.read().strip().split("\n")
+        return f.read()
 
 
 def bulid_line(start: Coordinates, end: Coordinates, block_set: Set[Coordinates]):
@@ -99,7 +99,8 @@ def bulid_line(start: Coordinates, end: Coordinates, block_set: Set[Coordinates]
     block_set.add(end)
 
 
-def task1(lines):
+def task1(text):
+    lines = text.strip().split("\n")
     cave = Cave(lines)
     count = 0
     while cave.pour():
@@ -107,12 +108,14 @@ def task1(lines):
     return count
 
 
-def task2(lines):
+def task2(text):
+    lines = text.strip().split("\n")
     cave = Cave(lines)
     cave.add_floor()
     return cave.count2()
 
 
-inp = ftl("14in.txt")
-print(task1(inp))
-print(task2(inp))
+if __name__ == "__main__":
+    inp = fts("14in.txt")
+    print(task1(inp))
+    print(task2(inp))

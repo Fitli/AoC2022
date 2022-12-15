@@ -58,6 +58,7 @@ def task2(text: str) -> int:
     return divider1pos * divider2pos
 
 
-inp = fts("13in.txt")
-print(task1(inp))
-print(task2(inp))
+if __name__ == "__main__":
+    inp = fts("13in.txt")
+    print(task1(inp))
+    print(task2(inp))

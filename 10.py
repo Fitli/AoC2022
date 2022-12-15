@@ -1,6 +1,6 @@
-def file_to_lines(filename):
-    with open(filename) as f:
-        return f.readlines()
+def fts(path: str) -> str:
+    with open(path, "r") as f:
+        return f.read()
 
 
 def process_line(line):
@@ -11,7 +11,8 @@ def process_line(line):
         return int(spl[1]), 2
 
 
-def task1(lines):
+def task1(text:str):
+    lines = text.strip().split("\n")
     cycle = 0
     x = 1
     s = 0
@@ -21,18 +22,19 @@ def task1(lines):
         x, cycle = x + dx, cycle + dcycle
         if (cycle + 1 - cycle % 2) == interesting_cycle - 1:
             s += interesting_cycle * x
-            print(cycle, x, interesting_cycle * x, s)
             interesting_cycle += 40
         if cycle > 220:
             break
     return s
 
 
-def task2(lines):
+def task2(text: str):
+    lines = text.strip().split("\n")
     x = 1
     line_i = 0
     dx = 0
     wait = 0
+    result = ""
     for _ in range(6):
         line = ""
         for pos in range(40):
@@ -45,9 +47,11 @@ def task2(lines):
             else:
                 line += "."
             wait -= 1
-        print(line)
+        result += line + "\n"
+    return result
 
 
-inp = file_to_lines("10in.txt")
-print(task1(inp))
-task2(inp)
+if __name__ == "__main__":
+    inp = fts("10in.txt")
+    print(task1(inp))
+    print(task2(inp))

@@ -6,8 +6,8 @@ def fts(path: str) -> str:
         return f.read()
 
 
-def task1(inp: str) -> str:
-    lines = inp.split("\n")
+def task1(text: str) -> str:
+    lines = text.split("\n")
     ncolumns = (len(lines[0]) + 1) // 4
     stacks = [[] for _ in range(ncolumns)]
     for line in lines:
@@ -25,8 +25,8 @@ def task1(inp: str) -> str:
     return "".join([x[-1] for x in stacks])
 
 
-def task2(inp: str) -> str:
-    lines = inp.split("\n")
+def task2(text: str) -> str:
+    lines = text.split("\n")
     ncolumns = (len(lines[0]) + 1) // 4
     stacks = [[] for _ in range(ncolumns)]
     for line in lines:
@@ -44,6 +44,7 @@ def task2(inp: str) -> str:
     return "".join([x[-1] for x in stacks])
 
 
-text = fts("05in.txt")
-print(task1(text))
-print(task2(text))
+if __name__ == "__main__":
+    inp = fts("05in.txt")
+    print(task1(inp))
+    print(task2(inp))

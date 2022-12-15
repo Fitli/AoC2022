@@ -2,9 +2,9 @@ from collections import namedtuple
 Coordinates = namedtuple("Coordinates", "x y")
 
 
-def file_to_lines(filename):
-    with open(filename) as f:
-        return f.readlines()
+def fts(path: str) -> str:
+    with open(path, "r") as f:
+        return f.read()
 
 
 def move_head(head: Coordinates, direction: str) -> Coordinates:
@@ -44,6 +44,17 @@ def simulate(lines, num_knots):
     return len(tail_set)
 
 
-inp = file_to_lines("09in.txt")
-print(simulate(inp, 2))
-print(simulate(inp, 10))
+def task1(text: str):
+    lines = text.strip().split("\n")
+    return simulate(lines, 2)
+
+
+def task2(text: str):
+    lines = text.strip().split("\n")
+    return simulate(lines, 10)
+
+
+if __name__ == "__main__":
+    inp = fts("09in.txt")
+    print(task1(inp))
+    print(task2(inp))

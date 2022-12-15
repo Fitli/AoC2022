@@ -3,9 +3,13 @@ from typing import Tuple, Set
 Coordinates = Tuple[int, int]
 
 
-def load_map(filename):
-    with open(filename, "r") as f:
-        lines = f.readlines()
+def fts(filename):
+    with open(filename) as f:
+        return f.read()
+
+
+def load_map(text):
+    lines = text.strip().split("\n")
     mapa = list(map(list, lines))
     return mapa
 
@@ -24,7 +28,8 @@ def neighbours(coords, height, width):
     return neighs
 
 
-def task1(mapa):
+def task1(text: str):
+    mapa = load_map(text)
     reachable: Set[Coordinates] = set()
     visited: Set[Coordinates] = set()
     height, width = len(mapa), len(mapa[0])
@@ -50,7 +55,8 @@ def task1(mapa):
     return it
 
 
-def task2(mapa):
+def task2(text: str):
+    mapa = load_map(text)
     reachable = set()
     visited = set()
     height, width = len(mapa), len(mapa[0])
@@ -79,7 +85,7 @@ def task2(mapa):
     return it
 
 
-inp = load_map("12in.txt")
-print(task1(inp))
-inp = load_map("12in.txt")
-print(task2(inp))
+if __name__ == "__main__":
+    inp = fts("12in.txt")
+    print(task1(inp))
+    print(task2(inp))

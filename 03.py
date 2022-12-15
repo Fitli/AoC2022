@@ -4,14 +4,14 @@ def fts(path: str) -> str:
 
 
 def to_priority(item: str) -> int:
-    if(item == item.lower()):
+    if item == item.lower():
         return ord(item)-ord("a")+1
     else:
         return ord(item)-ord("A")+27
 
 
-def task1(inp: str) -> int:
-    lines = inp.split()
+def task1(text: str) -> int:
+    lines = text.split()
     suma = 0
     for line in lines:
         middle = len(line)//2
@@ -23,8 +23,8 @@ def task1(inp: str) -> int:
     return suma
 
 
-def task2(inp: str) -> int:
-    lines = inp.split()
+def task2(text: str) -> int:
+    lines = text.split()
     suma = 0
     for i in range(0, len(lines), 3):
         letters = set(lines[i])\
@@ -34,6 +34,7 @@ def task2(inp: str) -> int:
     return suma
 
 
-text = fts("03in.txt")
-print(task1(text))
-print(task2(text))
+if __name__ == "__main__":
+    inp = fts("03in.txt")
+    print(task1(inp))
+    print(task2(inp))

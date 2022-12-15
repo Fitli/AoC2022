@@ -6,8 +6,8 @@ def fts(path: str) -> str:
         return f.read()
 
 
-def task1(inp: str) -> int:
-    elfs = inp.split("\n\n")
+def task1(text: str) -> int:
+    elfs = text.split("\n\n")
     cals = [sum(map(int, elf.split())) for elf in elfs]
     return max(cals)
 
@@ -21,8 +21,8 @@ def check(suma: int, max3: List[int]):
             break
 
 
-def task2(inp: str) -> int:
-    elfs = inp.split("\n\n")
+def task2(text: str) -> int:
+    elfs = text.split("\n\n")
     cals = [sum(map(int, elf.split())) for elf in elfs]
     max3 = [0, 0, 0]
     for elf in cals:
@@ -30,6 +30,7 @@ def task2(inp: str) -> int:
     return sum(max3)
 
 
-text = fts("01in.txt")
-print(task1(text))
-print(task2(text))
+if __name__ == "__main__":
+    inp = fts("01in.txt")
+    print(task1(inp))
+    print(task2(inp))

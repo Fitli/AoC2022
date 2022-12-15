@@ -23,8 +23,8 @@ def overlaps(interval1: Interval, interval2: Interval) -> bool:
            is_in(interval2[0], interval1)
 
 
-def task1(inp: str) -> int:
-    lines = inp.split()
+def task1(text: str) -> int:
+    lines = text.split()
     count = 0
     for line in lines:
         match = re.match(r"(\d+)-(\d+),(\d+)-(\d+)", line)
@@ -36,8 +36,8 @@ def task1(inp: str) -> int:
     return count
 
 
-def task2(inp) -> int:
-    lines = inp.split()
+def task2(text) -> int:
+    lines = text.split()
     count = 0
     for line in lines:
         match = re.match(r"(\d+)-(\d+),(\d+)-(\d+)", line)
@@ -49,7 +49,8 @@ def task2(inp) -> int:
     return count
 
 
-text = fts("04in.txt")
-print(task1(text))
-print(task2(text))
+if __name__ == "__main__":
+    inp = fts("04in.txt")
+    print(task1(inp))
+    print(task2(inp))
 

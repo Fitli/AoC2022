@@ -1,3 +1,8 @@
+def fts(path: str) -> str:
+    with open(path, "r") as f:
+        return f.read()
+
+
 my_shapes = {"X": "rock",
              "Y": "paper",
              "Z": "scissors"}
@@ -27,29 +32,29 @@ my_results = {"X": 0,
 my_strategies = {(his_s, res): my_s for (my_s, his_s), res in win_values.items()}
 
 
-def task1(filename: str) -> int:
+def task1(text: str) -> int:
     s = 0
-    with open(filename, "r") as f:
-        for line in f:
-            his, my = line.strip().split()
-            his = opponent_shapes[his]
-            my = my_shapes[my]
-            s += shape_values[my]
-            s += win_values[(my, his)]
+    for line in text.strip().split("\n"):
+        his, my = line.strip().split()
+        his = opponent_shapes[his]
+        my = my_shapes[my]
+        s += shape_values[my]
+        s += win_values[(my, his)]
     return s
 
 
-def task2(filename: str) -> int:
+def task2(text) -> int:
     s = 0
-    with open(filename, "r") as f:
-        for line in f:
-            his, my = line.strip().split()
-            his = opponent_shapes[his]
-            my = my_strategies[(his, my_results[my])]
-            s += shape_values[my]
-            s += win_values[(my, his)]
+    for line in text.strip().split("\n"):
+        his, my = line.strip().split()
+        his = opponent_shapes[his]
+        my = my_strategies[(his, my_results[my])]
+        s += shape_values[my]
+        s += win_values[(my, his)]
     return s
 
 
-print(task1("02in.txt"))
-print(task2("02in.txt"))
+if __name__ == "__main__":
+    inp = fts("02in.txt")
+    print(task1(inp))
+    print(task2(inp))
