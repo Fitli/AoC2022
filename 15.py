@@ -1,9 +1,11 @@
 import re
+import time
 from collections import namedtuple
-from typing import List, Tuple
+from typing import List, Tuple, Set
 
 Coordinates = namedtuple("Coordinates", "x y")
 Segment = namedtuple("Segment", "start end")
+Rectangle = Tuple[Coordinates, Coordinates]
 
 
 def ftl(filename: str) -> List[str]:
@@ -76,26 +78,70 @@ def task1(lines, line):
 
 
 def frequency(x, y):
-    print(x, y)
     return 4000000 * x + y
+
+
+def transform(point: Coordinates) -> Coordinates:
+    return Coordinates(point.x + point.y, point.y - point.x)
+
+
+def detransform(point: Coordinates) -> Coordinates:
+    return Coordinates((point.x - point.y) // 2, (point.x + point.y) // 2)
+
+
+def make_rectangle(sensor, beacon):
+    dist = distance(sensor, beacon)
+    return (transform(Coordinates(sensor.x, sensor.y - dist)),
+            transform(Coordinates(sensor.x, sensor.y + dist)))
+
+
+def difference(orig, removed) -> Set[Rectangle]:
+    if orig[0].x > removed[1].x or orig[0].y > removed[1].y or \
+            orig[1].x < removed[0].x or orig[1].y < removed[0].y:
+        return {orig}
+    res = set()
+    x = orig[0].x
+    y = orig[0].y
+    if x < removed[0].x <= removed[1].x:
+        res.add((Coordinates(x, y), Coordinates(removed[0].x - 1, orig[1].y)))
+        x = removed[0].x
+    if y < removed[0].y <= orig[1].y:
+        res.add((Coordinates(x, y), Coordinates(orig[1].x, removed[0].y - 1)))
+        y = removed[0].y
+    if x <= removed[1].x < orig[1].x:
+        res.add((Coordinates(removed[1].x + 1, y), orig[1]))
+    if y <= removed[1].y < orig[1].y:
+        res.add((Coordinates(x, removed[1].y + 1),
+                 Coordinates(min(orig[1].x, removed[1].x), orig[1].y)))
+    return res
+
+
+def corners(rectangle):
+    cs = [detransform(rectangle[0]),
+          detransform(rectangle[1]),
+          detransform(Coordinates(rectangle[0].x, rectangle[1].y)),
+          detransform(Coordinates(rectangle[1].x, rectangle[0].y))]
+    return cs
 
 
 def task2(lines, max_coord):
     coords = parse(lines)
-    for line in range(max_coord + 1):
-        segments = []
-        for sensor, beacon in coords:
-            seg = segment_covered(sensor, beacon, line)
-            if seg:
-                segments.append(seg)
-        segments = simplify_segments(segments)
-        if len(segments) == 1 and segments[0].start <= 0 and segments[0].end >= max_coord:
-            continue
-        if segments[0].start > 0:
-            return frequency(0, line)
-        return frequency(segments[0].end + 1, line)
+    rectangles = {(transform(Coordinates(max_coord // 2, -max_coord // 2)),
+                   transform(Coordinates(max_coord // 2, 3 * max_coord // 2)))}
+    for sensor, beacon in coords:
+        new_rectangles = set()
+        removed = make_rectangle(sensor, beacon)
+        for rectangle in rectangles:
+            new_rectangles.update(difference(rectangle, removed))
+        rectangles = new_rectangles
+    for rectangle in rectangles:
+        for corner in corners(rectangle):
+            if 0 <= corner.x <= max_coord and 0 <= corner.y <= max_coord:
+                return frequency(corner.x, corner.y)
 
 
 inp = ftl("15in.txt")
 print(task1(inp, 2000000))
+start = time.time()
 print(task2(inp, 4000000))
+print(f"time: {time.time() - start} s")
