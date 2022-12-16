@@ -43,12 +43,17 @@ def distances(tunnels):
     return dists
 
 
+def reduce_graph(flows: Dict[str, int], dists: Dict[Tuple[str, str], int]):
+    flows = {f: flows[f] for f in flows if flows[f] > 0}
+    dists = {d: dists[d] for d in dists if d[1] in flows}
+    return flows, dists
+
+
 def maximize(origin, flows, dists, used, minutes, cache, lower_bound):
     if minutes <= 1:
         return 0
     reachable = tuple(f for f in flows if f not in used
-                      and dists[(origin, f)] < minutes
-                      and flows[f] > 0)
+                      and dists[(origin, f)] < minutes)
 
     if (reachable, minutes) in cache[origin]:
         return cache[origin][(reachable, minutes)]
@@ -76,7 +81,9 @@ def maximize(origin, flows, dists, used, minutes, cache, lower_bound):
 def task1(text):
     flows, tunnels = parse_problem(text)
     dists = distances(tunnels)
+    flows, dists = reduce_graph(flows, dists)
     cache = {v: {} for v in flows}
+    cache["AA"] = {}
     return maximize("AA", flows, dists, set(), 30, cache, 0)
 
 
@@ -84,8 +91,7 @@ def all_sols(origin, flows, dists, used, minutes, prev_pressure, solutions):
     if minutes <= 1:
         return 0
     reachable = tuple(f for f in flows if f not in used
-                      and dists[(origin, f)] < minutes
-                      and flows[f] > 0)
+                      and dists[(origin, f)] < minutes)
     for r in reachable:
         arrival = minutes - dists[(origin, r)]
         # open
@@ -101,6 +107,7 @@ def all_sols(origin, flows, dists, used, minutes, prev_pressure, solutions):
 def task2(text):
     flows, tunnels = parse_problem(text)
     dists = distances(tunnels)
+    flows, dists = reduce_graph(flows, dists)
     solutions = {}
     all_sols("AA", flows, dists, set(), 26, 0, solutions)
 
