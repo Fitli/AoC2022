@@ -23,7 +23,7 @@ I have no time, because I am finishing my master thesis... So this is Python wit
 | Day 15 | [Problem 15](https://adventofcode.com/2022/day/15) | 0.235 ms + 0.737 ms | 121             |
 | Day 16 | [Problem 16](https://adventofcode.com/2022/day/16) | 267.7 ms + 228.6 ms | 108             |
 | Day 17 | [Problem 17](https://adventofcode.com/2022/day/17) | 124.9 ms + 217.4 ms | 101             |
-| Day 18 | [Problem 18](https://adventofcode.com/2022/day/18) | 7.581 ms + 43.55 ms | 50              |
+| Day 18 | [Problem 18](https://adventofcode.com/2022/day/18) | 8.498 ms + 67.79 ms | 35              |
 
 \* I've just run it 10 times and divided it
 
