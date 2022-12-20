@@ -7,19 +7,19 @@ def fts(filename: str) -> str:
 
 
 def mix(numbers, iters):
-    numbers = [(n, i) for i, n in enumerate(numbers)]
-    dq = deque(numbers)
+    nums = [(n%(len(numbers) - 1), i) for i, n in enumerate(numbers)]
+    dq = deque(nums)
     for _ in range(iters):
-        for elem in numbers:
+        for elem in nums:
             pos = dq.index(elem)
             dq.rotate(-pos)
             moved = dq.popleft()
-            step = moved[0] % len(dq)
+            step = moved[0]
             dq.rotate(-step)
             dq.appendleft(moved)
             dq.rotate(step)
             dq.rotate(pos)
-    return [n for n, _ in dq]
+    return [numbers[i] for _, i in dq]
 
 
 def get_score(numbers):
