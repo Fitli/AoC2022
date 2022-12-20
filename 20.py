@@ -1,4 +1,4 @@
-from typing import List
+from collections import deque
 
 
 def fts(filename: str) -> str:
@@ -6,42 +6,20 @@ def fts(filename: str) -> str:
         return f.read()
 
 
-class ListElem:
-    def __init__(self, val, pos):
-        self.val = val
-        self.orig_pos = pos
-
-
-def move(lst: List[ListElem], pos, positions: List[int]):
-    el = lst[pos]
-    dest_pos = (pos + el.val % (len(lst) - 1)) % (len(lst) - 1)
-    if dest_pos == 0:
-        dest_pos = len(lst)
-    if dest_pos > pos:
-        beg = lst[:pos]
-        mid = lst[pos + 1:dest_pos + 1]
-        end = lst[dest_pos + 1:]
-        lst = beg + mid + [el] + end
-    else:
-        beg = lst[:dest_pos]
-        mid = lst[dest_pos:pos]
-        end = lst[pos + 1:]
-        lst = beg + [el] + mid + end
-    for i, el in enumerate(lst):
-        positions[el.orig_pos] = i
-    return lst
-
-
 def mix(numbers, iters):
-    positions = []
-    elems: List[ListElem] = []
-    for i, n in enumerate(numbers):
-        positions.append(i)
-        elems.append(ListElem(n, i))
+    numbers = [(n, i) for i, n in enumerate(numbers)]
+    dq = deque(numbers)
     for _ in range(iters):
-        for p in positions:
-            elems = move(elems, p, positions)
-    return [e.val for e in elems]
+        for elem in numbers:
+            pos = dq.index(elem)
+            dq.rotate(-pos)
+            moved = dq.popleft()
+            step = moved[0] % len(dq)
+            dq.rotate(-step)
+            dq.appendleft(moved)
+            dq.rotate(step)
+            dq.rotate(pos)
+    return [n for n, _ in dq]
 
 
 def get_score(numbers):
@@ -49,9 +27,7 @@ def get_score(numbers):
     for i, n in enumerate(numbers):
         if n == 0:
             zero = i
-    return numbers[(zero + 1000) % len(numbers)] + \
-           numbers[(zero + 2000) % len(numbers)] + \
-           numbers[(zero + 3000) % len(numbers)]
+    return sum([numbers[(zero + i*1000) % len(numbers)] for i in range(1, 4)])
 
 
 def task1(text):
