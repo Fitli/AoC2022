@@ -35,10 +35,7 @@ def encrypt(n):
 
 def task1(text):
     values = [decrypt(line) for line in text.strip().split("\n")]
-    print(values)
-    print([encrypt(n) for n in values])
     s = sum(values)
-    print(s)
     return encrypt(s)
 
 def task2(text: str):

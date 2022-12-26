@@ -29,8 +29,9 @@ I have no time, because I am finishing my master thesis... So this is Python wit
 | [Day 20](20.py)                  | [Problem 20](https://adventofcode.com/2022/day/20) | 111.6 ms + 824.6 ms | 145             |
 | [Day 21](21.py)                  | [Problem 21](https://adventofcode.com/2022/day/21) | 26.07 ms + 16.80 ms | 76              |
 | [Day 22](22.py)                  | [Problem 22](https://adventofcode.com/2022/day/22) | 110.8 ms + :-(      | 120             |
-| Day 23                           | [Problem 23](https://adventofcode.com/2022/day/23) | :-(                 | :-(             |
-| [Day 24](24.py)                  | [Problem 24](https://adventofcode.com/2022/day/24) | 74.31 s + 218.6 s   | 90              |
+| [Day 23](23.py)                  | [Problem 23](https://adventofcode.com/2022/day/23) | 267.2 ms + 9.862 s  | 93              |
+| [Day 24](24.py)                  | [Problem 24](https://adventofcode.com/2022/day/24) | 74.31 s  + 218.6 s  | 90              |
+| [Day 24](24.py)                  | [Problem 24](https://adventofcode.com/2022/day/24) | 1.149 ms + ???      | ??              |
 
 \* I've just run it 10 times and divided it
 
