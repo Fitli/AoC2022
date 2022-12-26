@@ -30,8 +30,8 @@ I have no time, because I am finishing my master thesis... So this is Python wit
 | [Day 21](21.py)                  | [Problem 21](https://adventofcode.com/2022/day/21) | 26.07 ms + 16.80 ms | 76              |
 | [Day 22](22.py)                  | [Problem 22](https://adventofcode.com/2022/day/22) | 253.8 ms + 133.9 ms | 180             |
 | [Day 23](23.py)                  | [Problem 23](https://adventofcode.com/2022/day/23) | 267.2 ms + 9.862 s  | 93              |
-| [Day 24](24.py)                  | [Problem 24](https://adventofcode.com/2022/day/24) | 74.31 s  + 218.6 s  | 90              |
-| [Day 25](25.py)                  | [Problem 25](https://adventofcode.com/2022/day/25) | 1.149 ms + ???      | ??              |
+| [Day 24](24.py)                  | [Problem 24](https://adventofcode.com/2022/day/24) | 855.0 ms + 2.944 s  | 81              |
+| [Day 25](25.py)                  | [Problem 25](https://adventofcode.com/2022/day/25) | 1.149 ms            | 43              |
 
 \* I've just run it 10 times and divided it
 

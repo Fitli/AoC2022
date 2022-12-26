@@ -1,5 +1,5 @@
 import time
-from typing import Tuple, List, Set, Collection
+from typing import Tuple, Set
 
 
 def fts(filename: str) -> str:
@@ -7,93 +7,86 @@ def fts(filename: str) -> str:
         return f.read()
 
 
-class Blizzard:
-    def __init__(self, x, y, width, height, direction):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.dir = direction
-
-    def move(self):
-        if self.dir == ">":
-            self.x = (self.x+1) % self.width
-        elif self.dir == "<":
-            self.x = (self.x - 1) % self.width
-        elif self.dir == "v":
-            self.y = (self.y+1) % self.height
-        elif self.dir == "^":
-            self.y = (self.y - 1) % self.height
-
-
 class Map:
-    def __init__(self, walls, width, height, start: Tuple[int, int], end: Tuple[int, int]):
-        self.walls = walls
+    def __init__(self, width, height, start: Tuple[int, int], end: Tuple[int, int],
+                 blizzards: Set[Tuple[int, int, str]]):
+        self.blizards = blizzards
         self.width = width
         self.height = height
         self.start = start
         self.end = end
 
 
-def parse(text: str) -> Tuple[List[Blizzard], Map]:
+def parse(text: str) -> Map:
     lines = text.strip().split()
     height = len(lines)
     width = len(lines[0])
-    walls = set()
-    blizzards = []
+    blizzards = set()
     for i, line in enumerate(lines):
         for j, ch in enumerate(line):
-            if ch == "#":
-                walls.add((j, i))
-            elif ch != ".":
-                blizzards.append(Blizzard(j-1, i-1, width - 2, height - 2, ch))
+            if ch != ".":
+                blizzards.add((j, i, ch))
 
-    return blizzards, Map(walls, width, height, (1, 0), (width - 2, height - 1))
+    return Map(width, height, (1, 0), (width - 2, height - 1), blizzards)
 
 
-def neighbors(position: Tuple[int, int], blizzards: Collection[Blizzard], mapa: Map) \
+def comming_blizzard(mapa: Map, pos, minutes):
+    x, y = pos
+    if (x, y, "#") in mapa.blizards:
+        return True
+    if ((x - 1 + minutes) % (mapa.width - 2) + 1, y, "<") in mapa.blizards:
+        return True
+    if ((x - 1 - minutes) % (mapa.width - 2) + 1, y, ">") in mapa.blizards:
+        return True
+    if (x, (y - 1 + minutes) % (mapa.height - 2) + 1, "^") in mapa.blizards:
+        return True
+    if (x, (y - 1 - minutes) % (mapa.height - 2) + 1, "v") in mapa.blizards:
+        return True
+    return False
+
+
+def neighbors(position: Tuple[int, int], mapa: Map, minutes: int) \
         -> Set[Tuple[int, int]]:
-    blizzard_positions = {(b.x+1, b.y+1) for b in blizzards}
     neighs = set()
     x, y = position
-    if (x,y) not in blizzard_positions:
-        neighs.add((x,y))
-    if x > 0 and (x - 1, y) not in mapa.walls and (x - 1, y) not in blizzard_positions:
+    if not comming_blizzard(mapa, (x, y), minutes):
+        neighs.add((x, y))
+    if x > 0 and not comming_blizzard(mapa, (x - 1, y), minutes):
         neighs.add((x - 1, y))
-    if y > 0 and (x, y - 1) not in mapa.walls and (x, y - 1) not in blizzard_positions:
+    if y > 0 and not comming_blizzard(mapa, (x, y - 1), minutes):
         neighs.add((x, y - 1))
-    if x < mapa.width - 1 and (x + 1, y) not in mapa.walls and (x + 1, y) not in blizzard_positions:
+    if x < mapa.width - 1 and not comming_blizzard(mapa, (x + 1, y), minutes):
         neighs.add((x + 1, y))
-    if y < mapa.height - 1 and (x, y + 1) not in mapa.walls and (
-    x, y + 1) not in blizzard_positions:
+    if y < mapa.height - 1 and not comming_blizzard(mapa, (x, y + 1), minutes):
         neighs.add((x, y + 1))
     return neighs
 
-def go_from_to(mapa, blizzards, start, end):
+
+def go_from_to(mapa, start, end, init_t):
     possible_positions = {start}
     counter = 0
     while end not in possible_positions:
-        for blizz in blizzards:
-            blizz.move()
+        counter += 1
         new_positions = set()
         for pos in possible_positions:
-            new_positions.update(neighbors(pos, blizzards, mapa))
+            new_positions.update(neighbors(pos, mapa, init_t + counter))
         possible_positions = new_positions
-        counter += 1
     return counter
+
 
 def task1(text: str):
-    blizzards, mapa = parse(text)
+    mapa = parse(text)
     counter = 0
-    counter += go_from_to(mapa, blizzards, mapa.start, mapa.end)
+    counter += go_from_to(mapa, mapa.start, mapa.end, 0)
     return counter
 
+
 def task2(text: str):
-    blizzards, mapa = parse(text)
+    mapa = parse(text)
     counter = 0
-    counter += go_from_to(mapa, blizzards, mapa.start, mapa.end)
-    counter += go_from_to(mapa, blizzards, mapa.end, mapa.start)
-    counter += go_from_to(mapa, blizzards, mapa.start, mapa.end)
+    counter += go_from_to(mapa, mapa.start, mapa.end, 0)
+    counter += go_from_to(mapa, mapa.end, mapa.start, counter)
+    counter += go_from_to(mapa, mapa.start, mapa.end, counter)
     return counter
 
 
