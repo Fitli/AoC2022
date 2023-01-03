@@ -48,7 +48,7 @@ def can_buy(my_material: Dict[Material, int], robot_cost, considered) -> Set[Opt
 
 
 def next_buy_time(my_material: Dict[Material, int], my_robots, robot_cost, considered) -> int:
-    min_t = 24
+    min_t = 32
     for r in considered:
         t = max([-(-max(robot_cost[r][m] - my_material[m], 0) // max(my_robots[m], 1)) for m in
                  robot_cost[r]])
@@ -69,10 +69,10 @@ def produce(my_material, my_robots, time):
         my_material[robot] += my_robots[robot] * time
 
 
-def state_to_tuple(my_material, my_robots, minutes):
+def state_to_tuple(my_material, my_robots):
     return (my_material[Material.ORE], my_material[Material.CLAY], my_material[Material.OBSIDIAN],
             my_material[Material.GEODE], my_robots[Material.ORE], my_robots[Material.CLAY],
-            my_robots[Material.OBSIDIAN], my_robots[Material.GEODE], minutes)
+            my_robots[Material.OBSIDIAN], my_robots[Material.GEODE])
 
 
 def needed_robots(my_robots, robot_cost):
@@ -83,9 +83,9 @@ def needed_robots(my_robots, robot_cost):
 
 
 def explore(my_material, my_robots, minutes, cache, robot_cost, lb, considered_robots):
-    t = state_to_tuple(my_material, my_robots, minutes)
-    if t in cache:
-        return cache[t]
+    t = state_to_tuple(my_material, my_robots)
+    if t in cache and cache[t] >= minutes:
+        return 0
     if minutes <= 0:
         return my_material[Material.GEODE]
     if my_material[Material.GEODE] + minutes * my_robots[Material.GEODE] + (
@@ -112,7 +112,7 @@ def explore(my_material, my_robots, minutes, cache, robot_cost, lb, considered_r
                          max(lb, max_g), new_considered_robots)
         if result > max_g:
             max_g = result
-    cache[t] = max_g
+    cache[t] = minutes
     return max_g
 
 

@@ -25,7 +25,7 @@ I have no time, because I am finishing my master thesis... So this is Python wit
 | [Day 17](17.py)                  | [Problem 17](https://adventofcode.com/2022/day/17) | 124.9 ms + 217.4 ms | 101             |
 | [Day 18](18.py)                  | [Problem 18](https://adventofcode.com/2022/day/18) | 8.498 ms + 67.79 ms | 35              |
 | [Day 19 - CP](19CP.py)           | [Problem 19](https://adventofcode.com/2022/day/19) | 2.286 s  + 747.2 ms | 88              |
-| [Day 19 - classic](19classic.py) | [Problem 19](https://adventofcode.com/2022/day/19) | 51.66 s  + 40.82 s  | 142             |
+| [Day 19 - classic](19classic.py) | [Problem 19](https://adventofcode.com/2022/day/19) | 40.00 s  + 35.80 s  | 142             |
 | [Day 20](20.py)                  | [Problem 20](https://adventofcode.com/2022/day/20) | 111.6 ms + 824.6 ms | 145             |
 | [Day 21](21.py)                  | [Problem 21](https://adventofcode.com/2022/day/21) | 26.07 ms + 16.80 ms | 76              |
 | [Day 22](22.py)                  | [Problem 22](https://adventofcode.com/2022/day/22) | 253.8 ms + 133.9 ms | 180             |
