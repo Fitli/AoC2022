@@ -75,6 +75,16 @@ def state_to_tuple(my_material, my_robots):
             my_robots[Material.OBSIDIAN], my_robots[Material.GEODE])
 
 
+def exclude_mat_t(mat, my_material, my_robots, minutes):
+    l = [my_material[m] for m in my_material if m != mat] + list(my_robots.values()) + [minutes]
+    return tuple(l)
+
+
+def exclude_rob_t(mat, my_material, my_robots, minutes):
+    l = list(my_material.values()) + [my_robots[m] for m in my_robots if m != mat] + [minutes]
+    return tuple(l)
+
+
 def needed_robots(my_robots, robot_cost):
     productive = {Material.ORE, Material.CLAY, Material.OBSIDIAN}
     needed = {r for r in productive if my_robots[r] < max([robot_cost[m][r] for m in robot_cost])}
@@ -82,10 +92,23 @@ def needed_robots(my_robots, robot_cost):
     return needed
 
 
-def explore(my_material, my_robots, minutes, cache, robot_cost, lb, considered_robots):
+def explore(my_material, my_robots, minutes, time_cache, mat_caches, rob_caches, robot_cost, lb, considered_robots):
     t = state_to_tuple(my_material, my_robots)
-    if t in cache and cache[t] >= minutes:
+    if t in time_cache and time_cache[t] >= minutes:
         return 0
+    else:
+        time_cache[t] = minutes
+    for mat in robot_cost:
+        t = exclude_mat_t(mat, my_material, my_robots, minutes)
+        if t in mat_caches[mat] and mat_caches[mat][t] >= my_material[mat]:
+            return 0
+        else:
+            mat_caches[mat][t] = my_material[mat]
+        t = exclude_rob_t(mat, my_material, my_robots, minutes)
+        if t in rob_caches[mat] and rob_caches[mat][t] >= my_robots[mat]:
+            return 0
+        else:
+            rob_caches[mat][t] = my_robots[mat]
     if minutes <= 0:
         return my_material[Material.GEODE]
     if my_material[Material.GEODE] + minutes * my_robots[Material.GEODE] + (
@@ -108,11 +131,10 @@ def explore(my_material, my_robots, minutes, cache, robot_cost, lb, considered_r
         time_jump = min(next_buy_time(new_material, new_robots, robot_cost, new_considered_robots),
                         minutes - 1)
         produce(new_material, new_robots, time_jump)
-        result = explore(new_material, new_robots, minutes - 1 - time_jump, cache, robot_cost,
+        result = explore(new_material, new_robots, minutes - 1 - time_jump, time_cache, mat_caches, rob_caches, robot_cost,
                          max(lb, max_g), new_considered_robots)
         if result > max_g:
             max_g = result
-    cache[t] = minutes
     return max_g
 
 
@@ -141,7 +163,9 @@ def task1(text):
         considered = needed_robots(my_robs, robot_cost)
         time_jump = next_buy_time(my_mat, my_robs, robot_cost, considered)
         produce(my_mat, my_robs, time_jump)
-        result = explore(my_mat, my_robs, 24 - time_jump, {}, robot_cost, 0, considered)
+        mat_caches = {mat: {} for mat in robot_cost}
+        rob_caches = {mat: {} for mat in robot_cost}
+        result = explore(my_mat, my_robs, 24 - time_jump, {}, mat_caches, rob_caches, robot_cost, 0, considered)
         score += blueprint * result
     return score
 
@@ -155,7 +179,9 @@ def task2(text):
         considered = needed_robots(my_robs, robot_cost)
         time_jump = next_buy_time(my_mat, my_robs, robot_cost, considered)
         produce(my_mat, my_robs, time_jump)
-        result = explore(my_mat, my_robs, 32 - time_jump, {}, robot_cost, 0, considered)
+        mat_caches = {mat: {} for mat in robot_cost}
+        rob_caches = {mat: {} for mat in robot_cost}
+        result = explore(my_mat, my_robs, 32 - time_jump, {}, mat_caches, rob_caches, robot_cost, 0, considered)
         score *= result
     return score
 
@@ -166,5 +192,5 @@ if __name__ == "__main__":
     print(task1(inp))
     print(f"{time.time() - start} s")
     start = time.time()
-    print(task2(inp))
+    #print(task2(inp))
     print(f"{time.time() - start} s")
